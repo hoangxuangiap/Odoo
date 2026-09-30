@@ -44,7 +44,7 @@ Cấu trúc rõ ràng nhất quán: Sắp xếp các thành phần form, tree,ka
 
 
 
-Ngày 3:
+**Ngày 3:**
 
 
 
@@ -195,4 +195,211 @@ readonly="1": Khóa không cho chỉnh sửa trường dữ liệu.
 
 
 required="1": Bắt buộc phải nhập dữ liệu trước khi lưu.
+
+
+
+**Ngày 4:**
+
+
+
+**Actions trong Odoo**
+
+Actions xác định hệ thống phản hồi lại các tương tác của người dung
+
+1. **Các thuộc tính bắt buộc của một Action**
+
+type: Phân loại action, quyết định cách hệ thống phân tích và xử lý đối tượng.
+
+name: Tên hiển thị ngắn gọn của action mục địch quản lý và đọc hiểu.
+
+
+
+**2 Các loại Action phổ biến**
+
+* Window Actions
+
+là loại phổ biến nhất dùng để hiển thị dữ lieu của Model lên giao diện người dùng dạng View (List,Form,Kanban...).
+
+* Url Action
+
+Điều hướng trình duyệt của người dùng đến một địa chỉ web(Url) bên ngoài 1 trang web tích hợp.
+
+Có thể tích hợp mở liên kết trên 1 tab trình duyệt mới hoặc chuyển hướng trực tiếp trang hiện tại.
+
+* Server Actions
+
+Cho phép hệ thống tự động các đoạn mã Python, tự động tạo mới/cập nhật bản ghi, hoặc chuỗi hành động hết hợp ở phía server mà không cần qua giao diện thủ công.
+
+* Report Actions:
+
+Dùng để gọi tiến trình in ấn hoặc xuất dữ lieu báo cáo.
+
+* Client Actions:
+
+Gọi trực tiếp mọt hành động hoặc một ứng dụng chạy hoàn toàn ở phía trình duyệt.
+
+Được sử dụng để tích hợp các thành phần giao diện nâng cao được viết bang JS.
+
+* Automated Actions
+
+Tự động kích hoạt các Server Actions dựa trên các sự kiện hoặc mốc thời gian diễn ra trong cơ sở dữ lieu.
+
+
+
+**Security**
+
+Security của Odoo được thiết kế đa tang nhắm kiểm soát chat chẽ quyền truy cập vào dữ lieu và tính năng của hệ thống.
+
+
+
+**Nhóm quyền.**
+
+Mục đích: Phân chia người dùng vào các nhóm chức năng khác nhau
+
+Các nhóm có thể kế thừa lẫn nhau để tạo ra phân cấp quyền từ thấp đến cao.
+
+
+
+1. Access Right
+
+Xác định quyền thao tác cơ bản của 1 nhóm người dùng đối với toàn bộ một Model cụ thể.
+
+Được khai báo thông qua tệp cấu hình
+
+4 quyền được thao tác chính:
+
+perm\_read: Quyền đọc, xem dữ lieu của bản ghi.
+
+perm\_write: Quyền chỉnh sửa, cập nhật thông tin bản ghi.
+
+perm\_create: Quyền tạo mới bản ghi.
+
+perm\_unlink: Quyền xóa bản ghi khỏi hệ thống.
+
+
+
+2\. Quy tắc bản ghi (Access rules)
+
+Dùng để lọc giới hạn quyền truy cập ở cấp độ từng bản ghi riêng lẻ thay vì kiểm soát mọi thứ trong model.
+
+Sử dụng biểu thức mien dữ lieu để quyết định bản ghi nào người dùng thuộc nhóm đó được phép xem, sửa, xóa.
+
+
+
+3\. Group (Nhóm quyền)
+
+Đối tượng đại diện cho 1 tập hợp người dùng có chung chức năng và vai trò trong hệ thống.
+
+Cơ chế phân cập: Các nhóm quyền có thể kế thừa lẫn nhua thông qua thuộc tính implied\_ids ,giúp thiết lập cấu trúc phân quyền từ cấp độ thâp lên cấp độ cao
+
+Ứng dụng: Làm căn cứ để gắn kết với Access Right, Record Rules hoặc dùng để ẩn/hiện các nút bấm, trường dữ liệu trên giao diện XML.
+
+
+
+**Ngày 5**
+
+
+
+1. Controllers
+
+Các yêu cầu HTTP gửi đến Odoo được xử lý bởi các Controllers. Để trọa một controllers, bạn cần định nghĩa một lớp Python kể thừ từ http.Controller.
+
+Đăng ký URL: Sử dụng decorator để liên kết 1 phương thức Python với 1 đường dẫn URL cụ thể trên hệ thống.
+
+
+
+2\. Cấu trúc dectorator
+
+Decorator hỗ trợ nhiều tham số quan trọng để cầu hình hành vi của route:
+
+* route: ĐƯờng dẫn URL
+* type: Loại giao thức xử lý yêu cầu
+
+  * 'http': Xử lý các yêu cầu gọi hàm từ xa thông qua JSON-RPC.
+* auth: Mức độ xác thực người dùng khi truy cập
+
+  * 'user': Người dùng bắt buộc phải đăng nhập vào hệ thống.
+  * 'public': Cho phép cả khách vãng lai hoặc người dùng đã đăng nhập truy cập.
+  * 'none': Không yêu cầu xác thục phên làm việc hoặc cơ sở dữ liệu
+* methods: Giới hạn phương thức HTTP được phép.
+* csrf: Cho phép bật hoặc tắt kiểm tra mã bảo mật CSRF.
+
+
+
+QWeb
+
+Là hệ thống template chính được Odoo sử dụng.Qweb là các tệp XML được biệc dịch thành hàm JavaScrip hoặc mã Python để render dữ liệu thành HTML.
+
+
+
+1. Điều khiển chính trong QWeb
+* Hiển thị dữ liệu: Dùng để in giá trị cảu một biến ra HTML
+* Hiển thị HTML thô (t-raw): In chuổi dữ liệu dưới dạng mã HTML nguyên bản.
+* Điều kiện rẽ nhánh: Xây dựng logic điều kiện tương tự cấu lệnh if-else trong lập trình.
+* Vòng lặp: Duyệt qua danh sách các bản ghi hoặc từ điển dữ liệu. Trong vòng lặp, Odoo tự động cung cấp các biến phụ trợ như \_all, \_even, \_odd, firsr, last.
+* Gán biến: Định nghĩa hoặc thay đổi giá trị của 1 biến trong phạm vi template.
+
+2\. Thao tác thuộc tính và nội dung linh hoạt
+
+* Gắn thuộc tính động (t-att... hoặc t-attf-...):
+
+t-att-class="variable": Gắn giá trị thuộc tính động hoàn toàn từ biến.
+
+t-attf-class="my-class" {{ variable}} ">: Gắn thuộc tính kết hợp giữa chuỗi tĩnh và biểu thức động.
+
+* Kết hợp phần tử HTML(t-field): Dùng cho các trường dữ liệu của Model Odoo để tự động định dạng hiển thị và hỗ trợ chỉnh sửa trực tiếp.
+
+
+
+**Ngày 6:**
+
+JavaScript In Odoo
+
+1. Owl Framework Components
+
+Toàn bộ giao diện người dùng phía client đều được xây dựng dựa trên các component của Owl.
+
+Cấu trúc Component: Mỗi component thường gồm 1 lớp JavaScrip kết hợp với 1 template Qweb được viết bằng cú pháp XML tương tự như JSX để render giao diện trực quan.
+
+
+
+2\. Khái niệm cốt lõi
+
+* Assets Management
+
+Cơ chế khai báo, gom nhóm và các tệp như JS, CSS/SCSS và các tệp template XML lên trình duyệt. 
+
+* Module System
+
+Cơ chế quản lý phạm vi và phụ thuộc giữa các tệp JS trong Odoo.
+
+Odoo sử dụng hệ thống danh mục Module giữa các tệp JS có thể gọi, Kế thừa và tái sử dụng lẫn nhau mà không làm ô nhiễm biến toàn cục.
+
+* Inheritance, Mixins, Patching( Kế thừa và vá lỗi)
+
+Inheritanca, Patching: Thay vì kế thừa lớp phức tạp như backend Python, ở frontend, Odoo cung cấp hàm patch cho phép lập trình viên ghi đè, mở rộng hoặc bổ sung phương thức cho các component hoặc đối tượng sẵn có của Odoo mà không cần viết lại toàn bộ.
+
+Mixins: Các đoạn mã logic độc lập có thể được trộn vào nhiều component khác nhau để tái sử dụng các tính năng chung.
+
+* Widget
+
+Mỗi component là một khối giao diện độc lập gồm mội lớp JS kết hợp với một template XML. Component có vòng đời rõ ràng với các loại hook chuẩn như setup(), onWillStart(), onMounted().
+
+* Even
+
+DOM Events: lắng nghe và xử lý các thao tác tương tác của người dùng trực tiếp trên giao diện thông qua cú pháp khai báo trong template XML.
+
+Component Events: Cơ chế truyền tín hiệu giữa các component
+
+* Fields Widget
+
+Các component chuyên biệt dùng để hiển thị và tương tác với các kiểu dữ liệu cụ thể (như Char, Integer,Many2one,Binary) trên các dạng giao diện Form hoặc List.
+
+
+
+
+
+
+
+
 
